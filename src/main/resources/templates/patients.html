@@ -6,9 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
-    <link href="webjars/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
-    <script src="webjars/jquery/3.6.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
 </head>
 <body>
     <div layout:fragment="content1">
@@ -16,7 +13,7 @@
             <div class="card">
                 <div class="card-header">Liste des patients</div>
                 <div class="card-body">
-                    <form th:action="@{index}" method="get">
+                    <form th:action="@{/user/index}" method="get">
                         <div>
                             <label>Keyword :</label>
                             <input type="text" name="keyword" th:value="${keyword}">
@@ -36,13 +33,13 @@
                             <th th:text="${p.dateNaissance}"></th>
                             <th th:text="${p.malade}"></th>
                             <th th:text="${p.score}"></th>
-                            <th>
-                                <a onclick="javascript:return confirm('Êtes vous sur ?')" th:href="@{delete(id=${p.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-danger">
+                            <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                                <a onclick="javascript:return confirm('Êtes vous sur ?')" th:href="@{/admin/delete(id=${p.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-danger">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </th>
-                            <th>
-                                <a th:href="@{editPatient(id=${p.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-success">
+                            <th th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                                <a th:href="@{/admin/editPatient(id=${p.id}, keyword=${keyword}, page=${currentPage})}" class="btn btn-success">
                                    Edit
                                 </a>
                             </th>
@@ -51,7 +48,7 @@
                     </table>
                     <ul class="nav nav-pills">
                         <li th:each="v,status:${pages}">
-                            <a th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                            <a th:href="@{/user/index(page=${status.index}, keyword=${keyword})}"
                                th:class="${currentPage==status.index?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
                                th:text="${1+status.index}"></a>
                         </li>
